@@ -45,7 +45,7 @@ function beginQuery() {
 }
 
 function selectQuantity(itemID) {
-    var stock;
+    var stock=0;
     connection.query("SELECT * FROM products WHERE item_id=?", itemID, function (err, res) {
         stock = res[0].stock_quantity;
     });
