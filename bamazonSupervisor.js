@@ -70,7 +70,6 @@ function viewDepartmentSales() {
 
     connection.query(query, function (err, res) {
         if (err) return console.log(err);
-        // console.log(res);
         for (var i = 0; i < res.length; i++) {
             var id = res[i].department_id;
             var name = res[i].department_name;
