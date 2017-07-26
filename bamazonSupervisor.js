@@ -66,12 +66,20 @@ function viewDepartmentSales() {
         head: ['department_id', 'department_name', "over_head_costs", "product_sales", "total_profit"]
     });
 
-    connection.query("SELECT *, SUM(product_sales) AS 'Department Sales' FROM products GROUP BY department_name;", function (err, res) {
-        connection.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, products.'Department Sales' FROM departments INNER JOIN products ON departments.department_name=products.department_name", function (err, res) {
-            console.log(res);
-        });
+    var groupBy = "SELECT department_name, SUM(product_sales) AS Department_Sales FROM products GROUP BY department_name;"
+    var join = "SELECT departments.`department_id`, departments.`department_name`, departments.`over_head_costs`, products.`Department-Sales` FROM departments INNER JOIN products WHERE departments.`department_name`=products.`department_name`"
+
+    connection.query(, function (err, res) {
+        if (err) return console.log(err);
+        console.log(res);
+
+        for (var i = 0; i < res.length; i++) {
+            var id = res[i].department_id;
+            var name = res[i].department_name;
+            var overHead = res[i].over_head_costs;
+            var departmentSales = res[i].Department_Sales
+            var profit = parseInt(res[i].Department_Sales) - parseInt(res[i].over_head_costs)
+            table.push([id, name, overHead, departmentSales, profit]);
+        }
     });
-
-
-    //table.push([id, name, totalOverHead, totalProductSales, profit]);
 }
