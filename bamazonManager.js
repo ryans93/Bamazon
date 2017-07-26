@@ -80,12 +80,10 @@ function addInventory() {
                 [{ stock_quantity: parseInt(stock) + parseInt(answers.quantityInput) },
                 { item_id: answers.addStock }],
                 function (err, res) {
-                    console.log(answers.quantityInput);
                     console.log(res.affectedRows + " products updated!\n");
                     start();
                 });
         });
-
     });
 }
 

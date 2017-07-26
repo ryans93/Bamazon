@@ -45,9 +45,11 @@ function beginQuery() {
 }
 
 function selectQuantity(itemID) {
-    var stock=0;
+    var stock = 0;
+    var price=0;
     connection.query("SELECT * FROM products WHERE item_id=?", itemID, function (err, res) {
         stock = res[0].stock_quantity;
+        price=res[0].price;
     });
     var askQuantity = {
         type: "input",
@@ -66,8 +68,16 @@ function selectQuantity(itemID) {
                 }
             );
             console.log("Thank you for your order");
+            connection.query(
+                "UPDATE products SET ? WHERE ?",
+                [{ product_sales: parseFloat(price) * parseInt(answers.quantityInput) },
+                { item_id: itemID }],
+                function (err, res) {
+                    console.log(res.affectedRows + " product sales updated!\n");
+                    start();
+                });
         }
-        else{
+        else {
             console.log("Insufficient stock for this order.");
             beginQuery();
         }
