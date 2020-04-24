@@ -30,7 +30,9 @@ This file allows the user to assume the role of a supervisor. The user can:
 ![supervisor](./screenshots/supervisor.png)
 
 ### Technologies Used
-nodeJS, mySql, Inquirer
+* nodeJS
+* mySql 
+* Inquirer
 
 ## Installation
 Dependencies can be installed by navigating to the root folder and running:
