@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
+// set up mysql connection
 var connection = mysql.createConnection({
     host: "127.0.0.1",
     port: 8889,
@@ -14,13 +15,14 @@ connection.connect(function (err) {
     start();
 });
 
+// main menu for user
 function start() {
     var mainMenu = {
         name: "menuOption",
         type: 'list',
         message: "Select an option.",
-        choices: ["View Product Sales By Department", "Add New Department"]
-    }
+        choices: ["View Product Sales By Department", "Add New Department", "Exit"]
+    };
 
     inquirer.prompt([mainMenu]).then(function (answers) {
         if (answers.menuOption == "View Product Sales By Department") {
@@ -29,9 +31,13 @@ function start() {
         if (answers.menuOption == "Add New Department") {
             addDepartment();
         }
+        if (answers.menuOption == "Exit") {            
+            process.exit(0);
+        }
     });
 }
 
+// allow user to enter new department
 function addDepartment() {
     var name = {
         name: "name",
@@ -60,13 +66,14 @@ function addDepartment() {
     });
 }
 
+// view department sales as table
 function viewDepartmentSales() {
     var Table = require('cli-table');
     var table = new Table({
         head: ['department_id', 'department_name', "over_head_costs", "product_sales", "total_profit"]
     });
-
-    var query = "SELECT *, SUM(product_sales) AS Department_Sales FROM products INNER JOIN departments ON products.department_name=departments.department_name GROUP BY products.department_name ORDER BY departments.department_id ASC";
+    // get total of product sales for products within same department
+    var query = "SELECT products.department_name, departments.department_id, departments.over_head_costs, SUM(product_sales) AS Department_Sales FROM products INNER JOIN departments ON products.department_name=departments.department_name GROUP BY products.department_name, departments.department_id, departments.over_head_costs ORDER BY departments.department_id ASC";
 
     connection.query(query, function (err, res) {
         if (err) return console.log(err);
@@ -77,7 +84,8 @@ function viewDepartmentSales() {
             var departmentSales = res[i].Department_Sales
             var profit = parseInt(res[i].Department_Sales) - parseInt(res[i].over_head_costs)
             table.push([id, name, overHead, departmentSales, profit]);
-            if (i == res.length - 1) console.log(table.toString());
         }
+        console.log(table.toString());
+        start();
     });
 }
